@@ -1,18 +1,20 @@
 /*
-receba a matriz de preferências
-passe a mesma por um floyd warshall
-retorne o primeiro lugar
+Recebe as preferências,
+calcula um grafo da "força de preferência" entre os candidatos
+devolve o candidato preferido de acordo com o grafo (o nó de origem no grafo)
+
+https://en.wikipedia.org/wiki/Schulze_method
 */
 
 #[allow(unused_imports)]
-use crate::{clean_matrix, print_matrix};
+use crate::{new_matrix, print_matrix};
 use std::cmp::{max, min};
 
 
-pub fn schulze(prefs: Vec<Vec<usize>>, opcoes: Vec<String>) -> String{
+pub fn schulze(prefs: Vec<Vec<usize>>, candidates: Vec<String>) -> String{
     let dim = prefs.len();
     let paths = schulze_wfi(prefs);
-    let mut winner_idx= opcoes.len();
+    let mut winner_idx= candidates.len();
 
     //println!("\n\nVencedor de Schulze (1x1):\n");
     for i in 0..dim{
@@ -38,13 +40,13 @@ pub fn schulze(prefs: Vec<Vec<usize>>, opcoes: Vec<String>) -> String{
     println!("\n\nGrafo de preferência entre candidatos:");
     print_matrix(paths);
 
-    opcoes[winner_idx].clone()
+    candidates[winner_idx].clone()
 }
 
 //Algoritmo de Floyd-Warshall para o método de Schulze
 fn schulze_wfi(prefs: Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     let dim = prefs.len();
-    let mut strength:Vec<Vec<usize>> = clean_matrix(prefs.len(), 0);
+    let mut strength:Vec<Vec<usize>> = new_matrix(prefs.len(), 0);
 
     for i in 0..dim{
         for j in  0..dim{

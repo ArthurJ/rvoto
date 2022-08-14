@@ -20,10 +20,10 @@ Esse é o vencedor
     Uma forma de resolver é escolher a opção que tiver menos derrotas ignoradas pelo algoritmo
 */
 #[allow(unused_imports)]
-use crate::{clean_matrix, print_matrix};
+use crate::{new_matrix, print_matrix};
 use itertools::iproduct;
 
-pub fn ranked_pairs(prefs: Vec<Vec<usize>>, opcoes: Vec<String>) -> String {
+pub fn ranked_pairs(prefs: Vec<Vec<usize>>, candidates: Vec<String>) -> String {
     let tally = create_tally(prefs.clone());
 
     let mut results_1x1:Vec<(isize, usize, usize)> = Vec::new();
@@ -35,7 +35,7 @@ pub fn ranked_pairs(prefs: Vec<Vec<usize>>, opcoes: Vec<String>) -> String {
 
     let dim = prefs.len();
 
-    let mut result_mtx:Vec<Vec<isize>> = clean_matrix(dim, 0);
+    let mut result_mtx:Vec<Vec<isize>> = new_matrix(dim, 0);
 
     for par in results_1x1 {
         let (_,a,b) = par;
@@ -48,7 +48,7 @@ pub fn ranked_pairs(prefs: Vec<Vec<usize>>, opcoes: Vec<String>) -> String {
     }
 
     let mut max_source_degree:isize = -1;
-    let mut winner_idx=opcoes.len();
+    let mut winner_idx= candidates.len();
     for (idx,line) in result_mtx.iter().enumerate() {
         if line.iter().sum::<isize>() >= max_source_degree {
             max_source_degree = line.iter().sum();
@@ -62,7 +62,7 @@ pub fn ranked_pairs(prefs: Vec<Vec<usize>>, opcoes: Vec<String>) -> String {
     println!("\n\nMatriz de Resultado (Pares Rankeados):");
     print_matrix(result_mtx);
 
-    opcoes[winner_idx].clone()
+    candidates[winner_idx].clone()
 }
 
 fn get_pair_result(tally:Vec<Vec<isize>>, opt1:usize, opt2:usize) -> (isize, usize, usize) {

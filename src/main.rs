@@ -1,9 +1,3 @@
-/*
-todo
-    implementar solução para cedulas incompletas
-    implementar schulze
-*/
-
 mod ranked_paris;
 mod majority;
 mod schulze;
@@ -12,7 +6,7 @@ use std::cmp::max;
 use std::fs;
 
 fn main() {
-    let candidatos = load_candidatos("candidatos.txt");
+    let candidatos = load_candidates("candidatos.txt");
     //println!("Candidatos:\n{:#?}", candidatos);
 
     let cedulas = load_cedulas("urna.txt");
@@ -26,7 +20,7 @@ fn main() {
     //println!("Matriz de Preferências:");
     //print_matrix(preferencias.clone());
 
-    results_1x1(preferencias.clone(), candidatos.clone());
+    raw_results_1x1(preferencias.clone(), candidatos.clone());
     println!("----------------------------------------------------------------\n");
 
     println!("----------------------------------------------------------------");
@@ -57,7 +51,7 @@ fn load_cedulas(path: &str) -> Vec<Vec<usize>>{
     ).collect::<Vec<Vec<usize>>>()
 }
 
-fn load_candidatos(path: &str) -> Vec<String>{
+fn load_candidates(path: &str) -> Vec<String>{
     let contents = fs::read_to_string(path)
         .expect("Falha ao carregar lista de votos.");
     contents.split("\n").map(|x| x.to_string()).collect::<Vec<String>>()
@@ -90,7 +84,7 @@ fn pref_matriz(cedulas: Vec<Vec<usize>>, qtd_candidatos: usize) -> Vec<Vec<usize
     matriz
 }
 
-fn results_1x1(prefs:Vec<Vec<usize>>, candidatos:Vec<String>){
+fn raw_results_1x1(prefs:Vec<Vec<usize>>, candidatos:Vec<String>){
     for (idx,canditato_result) in prefs.clone().iter().enumerate(){
         for (adv,_) in canditato_result.clone().iter().enumerate(){
             if adv==idx{continue}
@@ -139,7 +133,7 @@ fn print_matrix<T>(matriz:Vec<Vec<T>>) where T: std::fmt::Display {
     println!("\n")
 }
 
-fn clean_matrix<T:Clone>(dim: usize, filler:T) -> Vec<Vec<T>> {
+fn new_matrix<T:Clone>(dim: usize, filler:T) -> Vec<Vec<T>> {
     let mut clean_mtx:Vec<Vec<T>> = Vec::new();
     for i in 0..dim{
         clean_mtx.insert(i, Vec::new());
