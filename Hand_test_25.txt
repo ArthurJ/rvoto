@@ -1,0 +1,54 @@
+Regexes de verificação:
+    ((^1,)|( 1,)|( 1$)).*(( 0,)|(^0,)|( 0$)) ---> 1 vence 0
+    (( 0,)|(^0,)|( 0$)).*((^1,)|( 1,)|( 1$)) ----> 0 vence 1
+
+Caso de teste: voto25.txt
+-----------------------------------------------------
+[Marina: 100%]
+
+Marina x Aécio Neves: 18 x 7
+
+Marina x Geraldo Alckmin: 17 x 8
+
+Marina x Cristovão Buarque: 21 x 4
+
+Marina x Dilma Roussef: 15 x 10
+
+Marina x Eduardo Jorge: 19 x 6
+
+Marina x Fernando Henrique Cardoso:  20 x 5
+
+Marina x José Maria: 18 x 7
+
+Marina x José Serra: 19 x 6
+
+Marina x Levy Fidelix: 19 x 6
+
+Marina x Luciana Genro: 15 x 10
+
+Marina x Luís Inácio Lula da Silva: 20 x 5
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+[Aécio Neves: 63.64%]
+
+Aécio Neves x Geraldo Alckmin: 14 x 11
+
+Aécio Neves x Cristovão Buarque: 14 x 11
+
+Aécio Neves x Dilma Roussef: 11 x 14
+
+Aécio Neves x Eduardo Jorge: 15 x 10
+
+Aécio Neves x Fernando Henrique Cardoso: 13 x 12
+
+Aécio Neves x José Maria: 14 x 11
+
+Aécio Neves x José Serra: 14 x 11
+
+Aécio Neves x Levy Fidelix: 13 x 12
+
+Aécio Neves x Luciana Genro: 11 x 14
+
+Aécio Neves x Luís Inácio Lula da Silva: 12 x 13
+
+Aécio Neves x Marina: 7 x 18
