@@ -58,7 +58,7 @@ fn calc_winner_path(path_mtx: Vec<Vec<usize>>) -> Vec<(usize)>{
             }}}
 
     winner_path = winner_path.iter().enumerate()
-        .sorted_by(|a,b| a.1.cmp(b.1))
+        .sorted_by(|&(_,a),&(_,b)| a.cmp(b))
         .rev()
         .map(|(idx,wins)| idx)
         .collect();

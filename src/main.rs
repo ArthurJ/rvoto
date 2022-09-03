@@ -9,7 +9,7 @@ fn main() {
     let candidatos = load_candidates("candidatos.txt");
     //println!("Candidatos:\n{:#?}", candidatos);
 
-    let cedulas = load_cedulas("urna.txt");
+    let cedulas = load_cedulas("urna6i.txt");
     //println!("Cédulas:");
     //for cedula in cedulas {
     //    println!("{:?}", cedula);
