@@ -9,38 +9,18 @@ https://en.wikipedia.org/wiki/Schulze_method
 #[allow(unused_imports)]
 use crate::{new_matrix, print_matrix};
 use std::cmp::{max, min};
+use itertools::Itertools;
 
 
 pub fn schulze(prefs: Vec<Vec<usize>>, candidates: Vec<String>) -> String{
-    let dim = prefs.len();
     let paths = schulze_wfi(prefs);
-    let mut winner_idx= candidates.len();
-
-    //println!("\n\nVencedor de Schulze (1x1):\n");
-    for i in 0..dim{
-        let mut winning = true;
-        for j in 0..dim{
-            if i!=j{
-                winning = winning && (paths[i][j]>=paths[j][i]);
-
-                //match paths[i][j]>paths[j][i]{
-                //    true => println!("{} x {} => {}", opcoes[i], opcoes[j], opcoes[i]),
-                //    false => println!("{} x {} => {}", opcoes[i], opcoes[j], opcoes[j]),
-                //}
-
-                if !winning{break} /*Caso esteja imprimindo 1x1, comente essa linha*/
-            }
-        }
-        if winning{
-            winner_idx = i;
-            break; /*Caso esteja imprimindo 1x1, comente essa linha*/
-        }
-    }
+    let winner_path = calc_winner_path(paths.clone());
 
     println!("\n\nGrafo de preferência entre candidatos:");
     print_matrix(paths);
-
-    candidates[winner_idx].clone()
+    print_schulze_1x1(winner_path.clone(),candidates.clone());
+    print_winner_path(winner_path.clone(), candidates.clone());
+    candidates[winner_path[0]].clone()
 }
 
 //Algoritmo de Floyd-Warshall para o método de Schulze
@@ -56,11 +36,50 @@ fn schulze_wfi(prefs: Vec<Vec<usize>>) -> Vec<Vec<usize>>{
 
     for i in 0..dim{
         for j in  0..dim{
-            if i!=j{
-                for k in 0..dim{
-                    if i!=k && j!=k{
-                        strength[j][k]=max(strength[j][k],
-                                           min(strength[j][i], strength[i][k]))
-                    }}}}}
+            if i==j { continue }
+            for k in 0..dim{
+                if i!=k && j!=k{
+                    strength[j][k]=max(strength[j][k],
+                                       min(strength[j][i], strength[i][k]))
+                }}}}
     strength
+}
+
+
+fn calc_winner_path(path_mtx: Vec<Vec<usize>>) -> Vec<(usize)>{
+    let dim = path_mtx.len();
+    let mut winner_path = vec![0usize;dim];
+
+    for i in 0..dim{
+        for j in 0..dim {
+            if i == j { continue }
+            if path_mtx[i][j]>path_mtx[j][i]{
+                winner_path[i] +=1;
+            }}}
+
+    winner_path = winner_path.iter().enumerate()
+        .sorted_by(|a,b| a.1.cmp(b.1))
+        .rev()
+        .map(|(idx,wins)| idx)
+        .collect();
+
+    winner_path
+}
+
+fn print_schulze_1x1(winner_path: Vec<usize>, candidates:Vec<String>){
+    println!("Vencedor de Schulze (1x1):");
+
+    for (i,winner) in winner_path.iter().enumerate(){
+        for looser in winner_path.split_at(i+1).1{
+            println!("\t{} x {} => {}", candidates[*winner], candidates[*looser], candidates[*winner])
+        }}}
+
+fn print_winner_path(path:Vec<usize>, candidates: Vec<String>){
+    print!("\n(");
+    for (j,idx) in path.iter().enumerate(){
+        print!("{}",candidates[*idx]);
+        if j<path.len()-1{
+            print!(" -> ");
+        }}
+    println!(")\n")
 }

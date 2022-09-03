@@ -77,10 +77,7 @@ fn pref_matriz(cedulas: Vec<Vec<usize>>, qtd_candidatos: usize) -> Vec<Vec<usize
             for vencido in vence{
                 if vencido != *candidato{
                     matriz[*candidato][vencido]+=1;
-                }
-            }
-        }
-    }
+                }}}}
     matriz
 }
 
@@ -94,10 +91,7 @@ fn raw_results_1x1(prefs:Vec<Vec<usize>>, candidatos:Vec<String>){
                 println!("{}({}) x {}({}) => {}", nome, prefs[idx][adv], adversario, prefs[adv][idx], nome);
             }else if prefs[idx][adv] == prefs[adv][idx] {
                 println!("{}({}) x {}({}) => {}", nome, prefs[idx][adv], adversario, prefs[adv][idx], "Empate");
-            }
-        }
-    }
-}
+            }}}}
 
 fn print_matrix<T>(matriz:Vec<Vec<T>>) where T: std::fmt::Display {
     let len = matriz.len();
@@ -105,8 +99,8 @@ fn print_matrix<T>(matriz:Vec<Vec<T>>) where T: std::fmt::Display {
     for i in 0..len{
         for j in &matriz[i]{
             max_digits = max(max_digits, j.to_string().len());
-        }
-    }
+        }}
+
     print_line(len, max_digits);
     println!();
     for i in 0..len{
@@ -128,8 +122,7 @@ fn print_matrix<T>(matriz:Vec<Vec<T>>) where T: std::fmt::Display {
         let dashes = format!("{:-^width$}", "", width=max_digits+1);
         for _ in 0..len{
             print!("{} ", dashes);
-        }
-    }
+        }}
     println!("\n")
 }
 
@@ -139,7 +132,6 @@ fn new_matrix<T:Clone>(dim: usize, filler:T) -> Vec<Vec<T>> {
         clean_mtx.insert(i, Vec::new());
         for j in 0..dim{
             clean_mtx[i].insert(j, filler.clone());
-        }
-    }
+        }}
     clean_mtx
 }
