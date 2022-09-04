@@ -4,27 +4,30 @@ calcula um grafo da "força de preferência" entre os candidatos
 devolve o candidato preferido de acordo com o grafo (o nó de origem no grafo)
 
 https://en.wikipedia.org/wiki/Schulze_method
+https://pt.wikipedia.org/wiki/M%C3%A9todo_de_Schulze
 */
 
 #[allow(unused_imports)]
-use crate::{new_matrix, print_matrix};
+use crate::{new_matrix};
+use crate::printer::{show_matrix, show_rank};
 use std::cmp::{max, min};
 use itertools::Itertools;
 
 
-pub fn schulze(prefs: Vec<Vec<usize>>, candidates: Vec<String>) -> String{
+pub fn schulze(prefs: &Vec<Vec<usize>>, candidates: &Vec<String>) -> String{
     let paths = schulze_wfi(prefs);
-    let winner_path = calc_winner_path(paths.clone());
+    let winner_path = calc_winner_path(&paths);
 
-    println!("\n\nGrafo de preferência entre candidatos:");
-    print_matrix(paths);
-    print_schulze_1x1(winner_path.clone(),candidates.clone());
-    print_winner_path(winner_path.clone(), candidates.clone());
+    println!();
+    show_rank(&winner_path, &candidates);
+    println!("Grafo de preferência entre candidatos:");
+    show_matrix(&paths);
+    print_pairwise_results(&winner_path, &candidates);
     candidates[winner_path[0]].clone()
 }
 
-//Algoritmo de Floyd-Warshall para o método de Schulze
-fn schulze_wfi(prefs: Vec<Vec<usize>>) -> Vec<Vec<usize>>{
+// https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+fn schulze_wfi(prefs: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     let dim = prefs.len();
     let mut strength:Vec<Vec<usize>> = new_matrix(prefs.len(), 0);
 
@@ -45,8 +48,7 @@ fn schulze_wfi(prefs: Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     strength
 }
 
-
-fn calc_winner_path(path_mtx: Vec<Vec<usize>>) -> Vec<(usize)>{
+fn calc_winner_path(path_mtx: &Vec<Vec<usize>>) -> Vec<usize>{
     let dim = path_mtx.len();
     let mut winner_path = vec![0usize;dim];
 
@@ -57,29 +59,20 @@ fn calc_winner_path(path_mtx: Vec<Vec<usize>>) -> Vec<(usize)>{
                 winner_path[i] +=1;
             }}}
 
-    winner_path = winner_path.iter().enumerate()
+    winner_path.iter().enumerate()
         .sorted_by(|&(_,a),&(_,b)| a.cmp(b))
         .rev()
-        .map(|(idx,wins)| idx)
-        .collect();
-
-    winner_path
+        .map(|(idx,_)| idx)
+        .collect()
 }
 
-fn print_schulze_1x1(winner_path: Vec<usize>, candidates:Vec<String>){
+
+fn print_pairwise_results(winner_path: &Vec<usize>, candidates:&Vec<String>){
     println!("Vencedor de Schulze (1x1):");
 
     for (i,winner) in winner_path.iter().enumerate(){
         for looser in winner_path.split_at(i+1).1{
             println!("\t{} x {} => {}", candidates[*winner], candidates[*looser], candidates[*winner])
-        }}}
-
-fn print_winner_path(path:Vec<usize>, candidates: Vec<String>){
-    print!("\n(");
-    for (j,idx) in path.iter().enumerate(){
-        print!("{}",candidates[*idx]);
-        if j<path.len()-1{
-            print!(" -> ");
         }}
-    println!(")\n")
+    println!();
 }
