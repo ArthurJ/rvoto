@@ -2,7 +2,11 @@ use std::collections::HashMap as Map;
 
 use crate::printer::{show_rank};
 
-pub fn maioria(urna: &Vec<Vec<usize>>, opcoes: &Vec<String>) -> String{
+/*
+Em caso de empate, quem tiver o nome mais alto na lista vence
+*/
+
+pub fn maioria(urna: &Vec<Vec<usize>>, candidates: &Vec<String>) -> String{
     let mut map:Map<usize, usize> = Map::new();
     for cedula in urna{
         match map.contains_key(&cedula[0]) {
@@ -13,8 +17,14 @@ pub fn maioria(urna: &Vec<Vec<usize>>, opcoes: &Vec<String>) -> String{
     let mut contagem = Vec::from_iter(map);
     contagem.sort_by(|&(_, a), &(_, b)| b.cmp(&a));
 
-    let rank = contagem.iter().map(|(candidato, _)| *candidato).collect();
-    show_rank(&rank, &opcoes);
+    let rank:Vec<usize> = contagem.iter().map(|(candidato, _)| *candidato).collect();
+    //show_rank(&rank, &candidates);
 
-    opcoes[rank[0]].clone()
+    println!("Votos por candidata:");
+    for (candidato,votos) in contagem.iter(){
+        println!("\t{}: {} votos.", candidates[*candidato], votos)
+    }
+    println!();
+
+    candidates[rank[0]].clone()
 }

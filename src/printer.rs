@@ -1,6 +1,6 @@
 use std::cmp::max;
 
-pub fn show_raw_results_1x1(prefs:&Vec<Vec<usize>>, candidatos:&Vec<String>){
+pub fn show_raw_results(prefs:&Vec<Vec<usize>>, candidatos:&Vec<String>){
     for (idx,canditato_result) in prefs.clone().iter().enumerate(){
         for (adv,_) in canditato_result.clone().iter().enumerate(){
             if adv==idx{continue}
@@ -10,8 +10,10 @@ pub fn show_raw_results_1x1(prefs:&Vec<Vec<usize>>, candidatos:&Vec<String>){
                 println!("\t{}({}) x {}({}) => {}", nome, prefs[idx][adv], adversario, prefs[adv][idx], nome);
             }else if prefs[idx][adv] == prefs[adv][idx] {
                 println!("\t{}({}) x {}({}) => {}", nome, prefs[idx][adv], adversario, prefs[adv][idx], "Empate");
-            }}}}
-
+            }}}
+    println!("\nMatriz de Preferências:");
+    show_matrix(prefs);
+}
 
 fn create_matrix_bounds(len:usize, max_digits:usize){
     print!("  ");
@@ -40,7 +42,7 @@ pub fn show_matrix<T>(matriz:&Vec<Vec<T>>) where T: std::fmt::Display {
     }
     create_matrix_bounds(len, max_digits);
 
-    println!("\n")
+    println!()
 }
 
 fn max_length<T>(matriz: &Vec<Vec<T>>, len: usize) -> usize
@@ -55,11 +57,11 @@ fn max_length<T>(matriz: &Vec<Vec<T>>, len: usize) -> usize
 }
 
 pub fn show_rank(path:&Vec<usize>, candidates: &Vec<String>){
-    print!("(");
+    print!("Rank:\n");
     for (j,idx) in path.iter().enumerate(){
         print!("{}",candidates[*idx]);
         if j<path.len()-1{
             print!(" -> ");
         }}
-    println!(")\n")
+    println!("\n")
 }

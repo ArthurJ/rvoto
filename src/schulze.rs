@@ -14,15 +14,14 @@ use std::cmp::{max, min};
 use itertools::Itertools;
 
 
-pub fn schulze(prefs: &Vec<Vec<usize>>, candidates: &Vec<String>) -> String{
-    let paths = schulze_wfi(prefs);
+pub fn schulze(matriz_urna: &Vec<Vec<usize>>, candidates: &Vec<String>) -> String{
+    let paths = schulze_wfi(matriz_urna);
     let winner_path = calc_winner_path(&paths);
 
-    println!();
     show_rank(&winner_path, &candidates);
-    println!("Grafo de preferência entre candidatos:");
+    println!("Grafo de Preferência entre Candidatas:");
     show_matrix(&paths);
-    print_pairwise_results(&winner_path, &candidates);
+    //print_pairwise_results(&winner_path, &candidates);
     candidates[winner_path[0]].clone()
 }
 
@@ -50,16 +49,16 @@ fn schulze_wfi(prefs: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
 
 fn calc_winner_path(path_mtx: &Vec<Vec<usize>>) -> Vec<usize>{
     let dim = path_mtx.len();
-    let mut winner_path = vec![0usize;dim];
+    let mut victory_path = vec![0usize; dim];
 
     for i in 0..dim{
         for j in 0..dim {
             if i == j { continue }
             if path_mtx[i][j]>path_mtx[j][i]{
-                winner_path[i] +=1;
+                victory_path[i] +=1;
             }}}
 
-    winner_path.iter().enumerate()
+    victory_path.iter().enumerate()
         .sorted_by(|&(_,a),&(_,b)| a.cmp(b))
         .rev()
         .map(|(idx,_)| idx)
@@ -68,7 +67,7 @@ fn calc_winner_path(path_mtx: &Vec<Vec<usize>>) -> Vec<usize>{
 
 
 fn print_pairwise_results(winner_path: &Vec<usize>, candidates:&Vec<String>){
-    println!("Vencedor de Schulze (1x1):");
+    println!("\nPreferência Geral:");
 
     for (i,winner) in winner_path.iter().enumerate(){
         for looser in winner_path.split_at(i+1).1{

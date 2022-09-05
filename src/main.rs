@@ -8,38 +8,34 @@ mod printer;
 use std::fs;
 
 fn main() {
-    let candidatos = load_candidates("candidatos.txt");
-    //println!("Candidatos:\n{:#?}", candidatos);
+    let candidatos = load_candidates("candidatas.txt");
 
     let cedulas = load_cedulas("urna.txt");
-    //println!("Cédulas:");
-    //for cedula in cedulas {
-    //    println!("{:?}", cedula);
-    //}
-    println!();
 
     let preferencias = pref_matriz(&cedulas, candidatos.len());
-    //println!("Matriz de Preferências:");
-    //print_matrix(preferencias.clone());
 
-    println!("Resultado Não-Processado:");
-    printer::show_raw_results_1x1(&preferencias, &candidatos);
-    println!("----------------------------------------------------------------\n");
+    println!();
+    println!("{titulo:-^80}",titulo=" Resultado Não-Processado: ");
+    printer::show_raw_results(&preferencias, &candidatos);
+    println!("{:-^80}", "");
 
-    println!("----------------------------------------------------------------");
+    println!("\n\n");
+    println!("{titulo:-^80}",titulo=" Maioria Simples ");
     let winner = majority::maioria(&cedulas, &candidatos);
-    println!("Opção escolhida pela maioria: {}", winner);
-    println!("----------------------------------------------------------------");
+    println!("\nPessoa vencedora por Maioria Simples: {}", winner);
+    println!("{:-^80}", "");
 
+    println!("\n\n");
+    println!("{titulo:-^80}",titulo=" Pares Ranqueados ");
     let winner = ranked_pairs::ranked_pairs(&preferencias, &candidatos);
-    println!("----------------------------------------------------------------");
-    println!("Opção escolhida por pares ranqueados: {}", winner);
-    println!("----------------------------------------------------------------");
+    println!("\nPessoa vencedora por Pares Ranqueados: {}", winner);
+    println!("{:-^80}", "");
 
+    println!("\n\n");
+    println!("{titulo:-^80}",titulo=" Método de Schulze ");
     let winner = schulze::schulze(&preferencias, &candidatos);
-    println!("----------------------------------------------------------------");
-    println!("Opção escolhida pelo método de Schulze: {}", winner);
-    println!("----------------------------------------------------------------");
+    println!("\nPessoa vencedora pelo Método de Schulze: {}", winner);
+    println!("{:-^80}", "");
 }
 
 fn load_cedulas(path: &str) -> Vec<Vec<usize>>{

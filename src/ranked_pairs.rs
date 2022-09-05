@@ -1,3 +1,8 @@
+#[allow(unused_imports)]
+use crate::{new_matrix};
+use crate::printer::{show_matrix, show_rank};
+use itertools::{iproduct, Itertools};
+
 /*
 https://en.wikipedia.org/wiki/Ranked_pairs
 
@@ -19,14 +24,10 @@ Esse é o vencedor
     (isso não está nem será implementado aqui:)
     Uma forma de resolver é escolher a opção que tiver menos derrotas ignoradas pelo algoritmo
 */
-#[allow(unused_imports)]
-use crate::{new_matrix};
-use crate::printer::{show_matrix, show_rank};
-use itertools::{iproduct, Itertools};
 
-pub fn ranked_pairs(prefs: &Vec<Vec<usize>>, candidates: &Vec<String>) -> String {
-    let pairwise = pairwise_results(prefs);
-    let result_mtx = result_matrix(pairwise, prefs.len());
+pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>, candidates: &Vec<String>) -> String {
+    let pairwise = pairwise_results(matriz_urna);
+    let result_mtx = result_matrix(pairwise, matriz_urna.len());
 
     let mut vote_sums:Vec<isize> = Vec::new();
     for line in result_mtx.clone() {
@@ -56,8 +57,8 @@ fn pairwise_results(prefs: &Vec<Vec<usize>>) -> Vec<(isize, usize, usize)> {
         results_1x1.push(get_pair_result(&tally, i, j));
     }
 
-    println!("\nTally:");
-    show_matrix(&tally);
+    // println!("\nTally:");
+    // show_matrix(&tally);
 
     results_1x1.sort_by(|&(a, _, _), &(b, _, _)| b.cmp(&a));
     results_1x1
