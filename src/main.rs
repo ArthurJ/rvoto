@@ -5,15 +5,38 @@ mod majority;
 mod schulze;
 mod printer;
 
+use std::fmt::Display;
 use std::fs;
 
 #[allow(unused_imports)]
 use majority::Contagem;
-use crate::printer::{print_pairwise_results, show_rank};
+use crate::printer::{print_pairwise_results, show_matrix, show_rank};
 
-fn main() {
-    let candidatos = load_candidates("candidatas.txt");
-    let cedulas = load_cedulas("urna25i.txt");
+fn main(){
+    by_matrix();
+}
+
+fn by_matrix(){
+    let base_path = "elections/sz_tie/".to_owned();
+    let candidatos = load_candidates((base_path.clone()+"candidatas.txt").as_str());
+    let preferencias = load_matrix((base_path+"urna.matrix").as_str());
+
+    println!();
+    println!("{titulo:-^80}",titulo=" Resultado Não-Processado: ");
+    printer::show_raw_results(&preferencias, &candidatos);
+    println!("{:-^80}", "");
+
+    let (rp_result,rp_mtx) = ranked_pairs::ranked_pairs(&preferencias);
+    report_condorcet(&candidatos, &rp_result, "Pares Ranqueados", &rp_mtx, "Matriz de Resultado");
+
+    let (s_result, s_paths) = schulze::schulze(&preferencias);
+    report_condorcet(&candidatos, &s_result, "Método de Schulze", &s_paths, "Grafo de Preferências");
+}
+
+fn by_ballots() {
+    let base_path = "elections/25s/".to_owned();
+    let candidatos = load_candidates((base_path.clone()+"candidatas.txt").as_str());
+    let cedulas = load_cedulas((base_path+"urna.txt").as_str());
     let preferencias = pref_matriz(&cedulas, candidatos.len());
 
     println!();
@@ -28,22 +51,31 @@ fn main() {
     for resultado in majority_results.iter(){
         println!("\t{}: {} votos.", candidatos[resultado.id], resultado.vote_count)
     }
-    println!("Pessoa vencedora por Maioria Simples: {:?}", candidatos[majority_results[0].id]);
+    println!("\nPessoa vencedora por Maioria Simples: {:?}", candidatos[majority_results[0].id]);
     println!("{:-^80}", "");
 
-    println!("\n\n");
-    println!("{titulo:-^80}",titulo=" Pares Ranqueados ");
-    let ranked_pairs_res = ranked_pairs::ranked_pairs(&preferencias);
-    show_rank(&ranked_pairs_res, &candidatos);
-    println!("\nPessoa vencedora por Pares Ranqueados: {}", candidatos[ranked_pairs_res[0]]);
-    println!("{:-^80}", "");
+    let (rp_result,rp_mtx) = ranked_pairs::ranked_pairs(&preferencias);
+    report_condorcet(&candidatos, &rp_result, "Pares Ranqueados", &rp_mtx, "Matriz de Resultado");
 
+    let (s_result, s_paths) = schulze::schulze(&preferencias);
+    report_condorcet(&candidatos, &s_result, "Método de Schulze", &s_paths, "Grafo de Preferências");
+
+}
+
+fn report_condorcet<T>(options: &Vec<String>, result: &Vec<usize>, method_id:&str,
+                       graph:&Vec<Vec<T>>, graph_id:&str) where T:Display{
     println!("\n\n");
-    println!("{titulo:-^80}",titulo=" Método de Schulze ");
-    let schulze_res = schulze::schulze(&preferencias);
-    show_rank(&schulze_res, &candidatos);
-    println!("\nPessoa vencedora pelo Método de Schulze: {}", candidatos[schulze_res[0]]);
+    println!("{titulo:-^80}", titulo = (" ".to_owned()+ method_id.clone()+" ").as_str());
+    println!("{}", graph_id);
+    show_matrix(graph);
+    println!();
+    show_rank(result, &options);
+    println!("\nPessoa vencedora por {}: {}", method_id, options[result[0]]);
     println!("{:-^80}", "");
+}
+
+fn load_matrix(path:&str) -> Vec<Vec<usize>>{
+    load_cedulas(path)
 }
 
 fn load_cedulas(path: &str) -> Vec<Vec<usize>>{

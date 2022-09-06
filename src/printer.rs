@@ -57,7 +57,7 @@ fn max_length<T>(matriz: &Vec<Vec<T>>, len: usize) -> usize
 }
 
 #[allow(dead_code)]
-pub fn show_rank(path:&Vec<usize>, candidates: &Vec<String>){
+pub fn show_rank(path:&Vec<usize>, candidates: &Vec<String>) {
     print!("Rank:\n");
     for (j,idx) in path.iter().enumerate(){
         print!("{}",candidates[*idx]);

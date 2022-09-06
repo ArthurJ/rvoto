@@ -16,13 +16,17 @@ Usando isso, criamos uma matriz de resultados onde
 
 Nessa matriz, encontramos a candidata vencedora (com maior preferência/source degree).
 
-Empate:
-    Nesta implementação, a opção mais no início da lista vence.
-    (O processo de ordenação é estável, por isso se a pontuação em duas posições forem iguais,
-    quando a lista é ordenada a posição relativa entre elas se preserva)
+Empate: A opção mais no início da lista vence.
+
+    O processo de ordenação é estável, por isso se a pontuação de duas candidatas forem iguais,
+    quando a lista é ordenada a posição relativa entre elas se preservaria.
+    No entanto o sorted_by gera resultado em ordem crescente, é necessario realizar um `rev` após o `sorted_by`
+    para obter o rank com o vencedor no início.
+    Isso vai afetar o resultado em caso de empate, por isso o código inclui um `rev` antes do sorted_by,
+    que garantirá o nome mais alto na lista como vencedor em caso de empate.
 */
 
-pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>) -> Vec<usize> {
+pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>) -> (Vec<usize>,Vec<Vec<isize>>) {
     let pairwise = pairwise_results(matriz_urna);
     let result_mtx = result_matrix(pairwise, matriz_urna.len());
 
@@ -34,16 +38,13 @@ pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>) -> Vec<usize> {
     let rank:Vec<usize>
         = vote_sums.iter()
             .enumerate()
+            .rev() // necessário em caso de empate
             .sorted_by(|&(_,a),&(_,b)| a.cmp(b))
             .rev()
             .map(|(candidate,_)| candidate)
             .collect();
 
-    println!("Matriz de Resultado (Pares Rankeados):");
-    show_matrix(&result_mtx);
-    println!();
-
-    rank
+    (rank, result_mtx)
 }
 
 fn pairwise_results(prefs: &Vec<Vec<usize>>) -> Vec<(isize, usize, usize)> {

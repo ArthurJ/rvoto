@@ -6,10 +6,14 @@ devolve o candidato preferido de acordo com o grafo (o nó de origem no grafo)
 https://en.wikipedia.org/wiki/Schulze_method
 https://pt.wikipedia.org/wiki/M%C3%A9todo_de_Schulze
 
-Empate:
-    Nesta implementação, a opção mais no início da lista vence.
-    (O processo de ordenação é estável, por isso se a pontuação em duas posições forem iguais,
-    quando a lista é ordenada a posição relativa entre elas se preserva)
+Empate: A opção mais no início da lista vence.
+
+    O processo de ordenação é estável, por isso se a pontuação de duas candidatas forem iguais,
+    quando a lista é ordenada a posição relativa entre elas se preservaria.
+    No entanto o sorted_by gera resultado em ordem crescente, é necessario realizar um `rev` após o `sorted_by`
+    para obter o rank com o vencedor no início.
+    Isso vai afetar o resultado em caso de empate, por isso o código inclui um `rev` antes do sorted_by,
+    que garantirá o nome mais alto na lista como vencedor em caso de empate.
 */
 
 use crate::{new_matrix};
@@ -18,14 +22,11 @@ use std::cmp::{max, min};
 use itertools::Itertools;
 
 
-pub fn schulze(matriz_urna: &Vec<Vec<usize>>) -> Vec<usize>{
+pub fn schulze(matriz_urna: &Vec<Vec<usize>>) -> (Vec<usize>, Vec<Vec<usize>>){
     let paths = schulze_wfi(matriz_urna);
     let winner_path = calc_winner_path(&paths);
 
-    println!("Grafo de Preferência entre Candidatas:");
-    show_matrix(&paths);
-    println!();
-    winner_path
+    (winner_path, paths)
 }
 
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
@@ -62,6 +63,7 @@ fn calc_winner_path(path_mtx: &Vec<Vec<usize>>) -> Vec<usize>{
             }}}
 
     victory_path.iter().enumerate()
+        .rev() // necessário em caso de empate
         .sorted_by(|&(_,a),&(_,b)| a.cmp(b))
         .rev()
         .map(|(idx,_)| idx)
