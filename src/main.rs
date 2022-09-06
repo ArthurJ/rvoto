@@ -7,11 +7,13 @@ mod printer;
 
 use std::fs;
 
+#[allow(unused_imports)]
+use majority::Contagem;
+use crate::printer::{print_pairwise_results, show_rank};
+
 fn main() {
     let candidatos = load_candidates("candidatas.txt");
-
-    let cedulas = load_cedulas("urna.txt");
-
+    let cedulas = load_cedulas("urna25i.txt");
     let preferencias = pref_matriz(&cedulas, candidatos.len());
 
     println!();
@@ -21,20 +23,26 @@ fn main() {
 
     println!("\n\n");
     println!("{titulo:-^80}",titulo=" Maioria Simples ");
-    let winner = majority::maioria(&cedulas, &candidatos);
-    println!("\nPessoa vencedora por Maioria Simples: {}", winner);
+    let majority_results = majority::maioria(&cedulas);
+    println!("Votos por candidata:");
+    for resultado in majority_results.iter(){
+        println!("\t{}: {} votos.", candidatos[resultado.id], resultado.vote_count)
+    }
+    println!("Pessoa vencedora por Maioria Simples: {:?}", candidatos[majority_results[0].id]);
     println!("{:-^80}", "");
 
     println!("\n\n");
     println!("{titulo:-^80}",titulo=" Pares Ranqueados ");
-    let winner = ranked_pairs::ranked_pairs(&preferencias, &candidatos);
-    println!("\nPessoa vencedora por Pares Ranqueados: {}", winner);
+    let ranked_pairs_res = ranked_pairs::ranked_pairs(&preferencias);
+    show_rank(&ranked_pairs_res, &candidatos);
+    println!("\nPessoa vencedora por Pares Ranqueados: {}", candidatos[ranked_pairs_res[0]]);
     println!("{:-^80}", "");
 
     println!("\n\n");
     println!("{titulo:-^80}",titulo=" Método de Schulze ");
-    let winner = schulze::schulze(&preferencias, &candidatos);
-    println!("\nPessoa vencedora pelo Método de Schulze: {}", winner);
+    let schulze_res = schulze::schulze(&preferencias);
+    show_rank(&schulze_res, &candidatos);
+    println!("\nPessoa vencedora pelo Método de Schulze: {}", candidatos[schulze_res[0]]);
     println!("{:-^80}", "");
 }
 
@@ -56,7 +64,7 @@ fn load_candidates(path: &str) -> Vec<String>{
     contents.split("\n").map(|x| x.to_string()).collect::<Vec<String>>()
 }
 
-fn pref_matriz(cedulas: &Vec<Vec<usize>>, qtd_candidatos: usize) -> Vec<Vec<usize>>{
+pub fn pref_matriz(cedulas: &Vec<Vec<usize>>, qtd_candidatos: usize) -> Vec<Vec<usize>>{
     /*instancia matriz*/
     let mut matriz:Vec<Vec<usize>> = Vec::new();
     for i in 0..qtd_candidatos{

@@ -56,6 +56,7 @@ fn max_length<T>(matriz: &Vec<Vec<T>>, len: usize) -> usize
     max_digits
 }
 
+#[allow(dead_code)]
 pub fn show_rank(path:&Vec<usize>, candidates: &Vec<String>){
     print!("Rank:\n");
     for (j,idx) in path.iter().enumerate(){
@@ -64,4 +65,15 @@ pub fn show_rank(path:&Vec<usize>, candidates: &Vec<String>){
             print!(" -> ");
         }}
     println!("\n")
+}
+
+#[allow(dead_code)]
+pub fn print_pairwise_results(winner_path: &Vec<usize>, candidates:&Vec<String>){
+    println!("\nPreferência Geral:");
+
+    for (i,winner) in winner_path.iter().enumerate(){
+        for looser in winner_path.split_at(i+1).1{
+            println!("\t{} x {} => {}", candidates[*winner], candidates[*looser], candidates[*winner])
+        }}
+    println!("\n");
 }

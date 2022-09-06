@@ -1,31 +1,28 @@
 #[allow(unused_imports)]
 use crate::{new_matrix};
-use crate::printer::{show_matrix, show_rank};
+use crate::printer::{show_matrix};
 use itertools::{iproduct, Itertools};
 
 /*
 https://en.wikipedia.org/wiki/Ranked_pairs
 
-Primeiro é gerada uma matriz "tally"
-onde o valor de cada celula ixj é a soma das vitórias e derrotas do canditato i contra o canditado j
+Primeiro é gerada uma matriz de "tally" onde o valor de cada celula [i][j]
+    é a soma das vitórias e derrotas do canditato i contra o canditado j.
 
-depois é feita a ordenação dos resultados 1x1, a vitória mais expressiva é a primeira da lista
+Depois é feita a ordenação dos resultados 1x1, a vitória mais expressiva é a primeira da lista.
 
-e usando isso, criamos uma matriz de resultados, onde se o canditato i vence o candidato j:
-a posição ixj fica com o valor 1
-a posição jxi fica com o valor -1
+Usando isso, criamos uma matriz de resultados onde
+    a posição [i][j] fica com o valor 1 e a sua simétrica fica com -1 quando i vence j
 
-com essa matriz de resultado, encontramos o candidato com maior preferência (com maior source degree)
-Esse é o vencedor
+Nessa matriz, encontramos a candidata vencedora (com maior preferência/source degree).
 
-    Empates:
-    Da maneira como está existe uma chance remota de acontecerem empates,
-    nesse caso, o candidato mais a frente na lista fica com a vitória
-    (isso não está nem será implementado aqui:)
-    Uma forma de resolver é escolher a opção que tiver menos derrotas ignoradas pelo algoritmo
+Empate:
+    Nesta implementação, a opção mais no início da lista vence.
+    (O processo de ordenação é estável, por isso se a pontuação em duas posições forem iguais,
+    quando a lista é ordenada a posição relativa entre elas se preserva)
 */
 
-pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>, candidates: &Vec<String>) -> String {
+pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>) -> Vec<usize> {
     let pairwise = pairwise_results(matriz_urna);
     let result_mtx = result_matrix(pairwise, matriz_urna.len());
 
@@ -42,10 +39,11 @@ pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>, candidates: &Vec<String>) -> 
             .map(|(candidate,_)| candidate)
             .collect();
 
-    show_rank(&rank, candidates);
     println!("Matriz de Resultado (Pares Rankeados):");
     show_matrix(&result_mtx);
-    candidates[rank[0]].clone()
+    println!();
+
+    rank
 }
 
 fn pairwise_results(prefs: &Vec<Vec<usize>>) -> Vec<(isize, usize, usize)> {

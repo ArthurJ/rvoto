@@ -5,35 +5,38 @@ devolve o candidato preferido de acordo com o grafo (o nó de origem no grafo)
 
 https://en.wikipedia.org/wiki/Schulze_method
 https://pt.wikipedia.org/wiki/M%C3%A9todo_de_Schulze
+
+Empate:
+    Nesta implementação, a opção mais no início da lista vence.
+    (O processo de ordenação é estável, por isso se a pontuação em duas posições forem iguais,
+    quando a lista é ordenada a posição relativa entre elas se preserva)
 */
 
-#[allow(unused_imports)]
 use crate::{new_matrix};
-use crate::printer::{show_matrix, show_rank};
+use crate::printer::{show_matrix};
 use std::cmp::{max, min};
 use itertools::Itertools;
 
 
-pub fn schulze(matriz_urna: &Vec<Vec<usize>>, candidates: &Vec<String>) -> String{
+pub fn schulze(matriz_urna: &Vec<Vec<usize>>) -> Vec<usize>{
     let paths = schulze_wfi(matriz_urna);
     let winner_path = calc_winner_path(&paths);
 
-    show_rank(&winner_path, &candidates);
     println!("Grafo de Preferência entre Candidatas:");
     show_matrix(&paths);
-    //print_pairwise_results(&winner_path, &candidates);
-    candidates[winner_path[0]].clone()
+    println!();
+    winner_path
 }
 
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 fn schulze_wfi(prefs: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
     let dim = prefs.len();
-    let mut strength:Vec<Vec<usize>> = new_matrix(prefs.len(), 0);
+    let mut strengths:Vec<Vec<usize>> = new_matrix(prefs.len(), 0);
 
     for i in 0..dim{
         for j in  0..dim{
             if prefs[i][j] > prefs[j][i]{
-                strength[i][j] = prefs[i][j];
+                strengths[i][j] = prefs[i][j];
             }}}
 
     for i in 0..dim{
@@ -41,10 +44,10 @@ fn schulze_wfi(prefs: &Vec<Vec<usize>>) -> Vec<Vec<usize>>{
             if i==j { continue }
             for k in 0..dim{
                 if i!=k && j!=k{
-                    strength[j][k]=max(strength[j][k],
-                                       min(strength[j][i], strength[i][k]))
+                    strengths[j][k]=max(strengths[j][k],
+                                        min(strengths[j][i], strengths[i][k]))
                 }}}}
-    strength
+    strengths
 }
 
 fn calc_winner_path(path_mtx: &Vec<Vec<usize>>) -> Vec<usize>{
@@ -63,15 +66,4 @@ fn calc_winner_path(path_mtx: &Vec<Vec<usize>>) -> Vec<usize>{
         .rev()
         .map(|(idx,_)| idx)
         .collect()
-}
-
-
-fn print_pairwise_results(winner_path: &Vec<usize>, candidates:&Vec<String>){
-    println!("\nPreferência Geral:");
-
-    for (i,winner) in winner_path.iter().enumerate(){
-        for looser in winner_path.split_at(i+1).1{
-            println!("\t{} x {} => {}", candidates[*winner], candidates[*looser], candidates[*winner])
-        }}
-    println!();
 }
