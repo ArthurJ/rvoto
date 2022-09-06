@@ -17,7 +17,6 @@ Empate: A opção mais no início da lista vence.
 */
 
 use crate::{new_matrix};
-use crate::printer::{show_matrix};
 use std::cmp::{max, min};
 use itertools::Itertools;
 

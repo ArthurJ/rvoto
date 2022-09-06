@@ -1,21 +1,28 @@
 extern crate core;
 
+#[macro_use]
+extern crate lazy_static;
+
 mod ranked_pairs;
 mod majority;
 mod schulze;
 mod printer;
 
 use std::fmt::Display;
+use std::collections::HashMap;
 use std::fs;
 
 #[allow(unused_imports)]
 use majority::Contagem;
-use crate::printer::{print_pairwise_results, show_matrix, show_rank};
+use crate::CondorcetMethods::RankedPairs;
+use crate::CondorcetMethods::Schulze;
+use crate::printer::{show_matrix, show_rank};
 
 fn main(){
     by_matrix();
 }
 
+#[allow(dead_code)]
 fn by_matrix(){
     let base_path = "elections/sz_tie/".to_owned();
     let candidatos = load_candidates((base_path.clone()+"candidatas.txt").as_str());
@@ -27,12 +34,13 @@ fn by_matrix(){
     println!("{:-^80}", "");
 
     let (rp_result,rp_mtx) = ranked_pairs::ranked_pairs(&preferencias);
-    report_condorcet(&candidatos, &rp_result, "Pares Ranqueados", &rp_mtx, "Matriz de Resultado");
+    report_condorcet(&candidatos, &rp_result, &rp_mtx, &RankedPairs);
 
     let (s_result, s_paths) = schulze::schulze(&preferencias);
-    report_condorcet(&candidatos, &s_result, "Método de Schulze", &s_paths, "Grafo de Preferências");
+    report_condorcet(&candidatos, &s_result, &s_paths, &Schulze);
 }
 
+#[allow(dead_code)]
 fn by_ballots() {
     let base_path = "elections/25s/".to_owned();
     let candidatos = load_candidates((base_path.clone()+"candidatas.txt").as_str());
@@ -55,17 +63,35 @@ fn by_ballots() {
     println!("{:-^80}", "");
 
     let (rp_result,rp_mtx) = ranked_pairs::ranked_pairs(&preferencias);
-    report_condorcet(&candidatos, &rp_result, "Pares Ranqueados", &rp_mtx, "Matriz de Resultado");
+    report_condorcet(&candidatos, &rp_result, &rp_mtx, &RankedPairs);
 
     let (s_result, s_paths) = schulze::schulze(&preferencias);
-    report_condorcet(&candidatos, &s_result, "Método de Schulze", &s_paths, "Grafo de Preferências");
+    report_condorcet(&candidatos, &s_result, &s_paths, &Schulze);
 
 }
 
-fn report_condorcet<T>(options: &Vec<String>, result: &Vec<usize>, method_id:&str,
-                       graph:&Vec<Vec<T>>, graph_id:&str) where T:Display{
+#[derive(Eq,PartialEq,Hash)]
+enum CondorcetMethods{
+    RankedPairs,
+    Schulze,
+}
+
+lazy_static! {
+    static ref CONDORCET_MAP: HashMap<CondorcetMethods, (&'static str, &'static str)> = {
+        let mut m = HashMap::new();
+        m.insert(RankedPairs, ("Tiedman/Pares Ranqueados", "Matriz de Resultado"));
+        m.insert(Schulze, ("Método de Schulze", "Grafo de Preferências"));
+        m
+    };
+}
+
+fn report_condorcet<T>(options: &Vec<String>, result: &Vec<usize>,
+                       graph:&Vec<Vec<T>>, method:&CondorcetMethods) where T:Display{
+
+    let (method_id, graph_id) = CONDORCET_MAP.get(method).unwrap();
+
     println!("\n\n");
-    println!("{titulo:-^80}", titulo = (" ".to_owned()+ method_id.clone()+" ").as_str());
+    println!("{titulo:-^80}", titulo = (" ".to_owned()+ method_id+" ").as_str());
     println!("{}", graph_id);
     show_matrix(graph);
     println!();
@@ -74,6 +100,7 @@ fn report_condorcet<T>(options: &Vec<String>, result: &Vec<usize>, method_id:&st
     println!("{:-^80}", "");
 }
 
+#[allow(dead_code)]
 fn load_matrix(path:&str) -> Vec<Vec<usize>>{
     load_cedulas(path)
 }

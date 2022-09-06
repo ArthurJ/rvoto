@@ -1,6 +1,5 @@
 #[allow(unused_imports)]
 use crate::{new_matrix};
-use crate::printer::{show_matrix};
 use itertools::{iproduct, Itertools};
 
 /*

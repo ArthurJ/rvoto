@@ -1,5 +1,5 @@
 [package]
-name = "RVoto"
+name = "r_voto"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 itertools = "0.10.3"
+lazy_static = "1.4.0"
 
