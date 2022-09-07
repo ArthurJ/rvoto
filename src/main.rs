@@ -79,7 +79,7 @@ enum CondorcetMethods{
 lazy_static! {
     static ref CONDORCET_MAP: HashMap<CondorcetMethods, (&'static str, &'static str)> = {
         let mut m = HashMap::new();
-        m.insert(RankedPairs, ("Tiedman/Pares Ranqueados", "Matriz de Resultado"));
+        m.insert(RankedPairs, ("Tideman/Pares Ranqueados", "Matriz de Resultado"));
         m.insert(Schulze, ("Método de Schulze", "Grafo de Preferências"));
         m
     };

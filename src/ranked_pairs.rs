@@ -1,11 +1,7 @@
-#[allow(unused_imports)]
-use crate::{new_matrix};
-use itertools::{iproduct, Itertools};
-
 /*
 https://en.wikipedia.org/wiki/Ranked_pairs
 
-Primeiro é gerada uma matriz de "tally" onde o valor de cada celula [i][j]
+Primeiro é gerada uma matriz de contagem onde o valor de cada celula [i][j]
     é a soma das vitórias e derrotas do canditato i contra o canditado j.
 
 Depois é feita a ordenação dos resultados 1x1, a vitória mais expressiva é a primeira da lista.
@@ -24,6 +20,10 @@ Empate: A opção mais no início da lista vence.
     Isso vai afetar o resultado em caso de empate, por isso o código inclui um `rev` antes do sorted_by,
     que garantirá o nome mais alto na lista como vencedor em caso de empate.
 */
+
+#[allow(unused_imports)]
+use crate::{new_matrix};
+use itertools::{iproduct, Itertools};
 
 pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>) -> (Vec<usize>,Vec<Vec<isize>>) {
     let pairwise = pairwise_results(matriz_urna);
@@ -55,7 +55,7 @@ fn pairwise_results(prefs: &Vec<Vec<usize>>) -> Vec<(isize, usize, usize)> {
         results_1x1.push(get_pair_result(&tally, i, j));
     }
 
-    // println!("\nTally:");
+    // println!("\Contagem:");
     // show_matrix(&tally);
 
     results_1x1.sort_by(|&(a, _, _), &(b, _, _)| b.cmp(&a));
