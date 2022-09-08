@@ -15,8 +15,9 @@ Empate: A opção mais no início da lista vence.
     Isso vai afetar o resultado em caso de empate, por isso o código inclui um `rev` antes do sorted_by,
     que garantirá o nome mais alto na lista como vencedor em caso de empate.
 */
-
-use crate::{new_matrix};
+#[allow(unused_imports)]
+use crate::{new_matrix, printer};
+use printer::show_matrix;
 use std::cmp::{max, min};
 use itertools::Itertools;
 

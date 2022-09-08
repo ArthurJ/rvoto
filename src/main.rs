@@ -24,7 +24,7 @@ fn main(){
 
 #[allow(dead_code)]
 fn by_matrix(){
-    let base_path = "elections/sz_tie/".to_owned();
+    let base_path = "elections/rp_tie/".to_owned();
     let candidatos = load_candidates((base_path.clone()+"candidatas.txt").as_str());
     let preferencias = load_matrix((base_path+"urna.matrix").as_str());
 
@@ -102,7 +102,14 @@ fn report_condorcet<T>(options: &Vec<String>, result: &Vec<usize>,
 
 #[allow(dead_code)]
 fn load_matrix(path:&str) -> Vec<Vec<usize>>{
-    load_cedulas(path)
+    let pref_matrix = load_cedulas(path);
+    let len = pref_matrix.len();
+    for line in pref_matrix.clone(){
+        if line.len() != len{
+            panic!("Matriz de preferências em estado invalido: há linhas com tamanhos diferentes.");
+        }
+    }
+    pref_matrix
 }
 
 fn load_cedulas(path: &str) -> Vec<Vec<usize>>{
