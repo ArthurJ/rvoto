@@ -1,0 +1,12 @@
+Dadas candidatas A, B e C, sendo A e B candidatas de alta preferência, pode haver a tentativa por parte do eleitorado de votar de forma estratégica.
+As eleitoras podem colocar a candidata C entre A e B afim de prejudicar a sua candidata preterida; e isso pode levar C a ser vencedora de Condorcet.
+
+Neste cenário a eleitora não se importa com a candidata C, porém a coloca no ranking acima da sua candidata preterida para diminuiir a probabilidade de vitória da mesma.
+Isso poderia ser considerado "voto desonesto"?
+Caso a eleitora acredite que a ordem de preferência expressa no seu voto seja a mais adequada, esse voto *não* deveria ser considerado desonesto.
+
+Se a eleitora acreditar que C é, de fato, menos preferível que a candidata em último lugar no seu voto, então o voto (A->C->B) é desonesto, porém,
+fazer isso não surte efeito desejado: aumentar a probabilidade de vitória de A.
+Além de causar efeitos indesejados:
+    - Diminuir a probabilidade de vitória de B frente a A;
+    - Aumentar a probabilidade total da vitória de C;

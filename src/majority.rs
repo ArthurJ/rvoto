@@ -22,5 +22,5 @@ pub fn maioria(urna: &Vec<Vec<usize>>) -> Vec<Contagem>{
     let mut contagem = Vec::from_iter(map);
     contagem.sort_by(|&(_, a), &(_, b)| b.cmp(&a));
     contagem.iter()
-        .map(|(cid,vcount)| Contagem{ id:*cid, vote_count:*vcount}).collect()
+        .map(|(c_id,vcount)| Contagem{ id:*c_id, vote_count:*vcount}).collect()
 }

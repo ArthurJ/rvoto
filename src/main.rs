@@ -19,7 +19,7 @@ use crate::CondorcetMethods::Schulze;
 use crate::printer::{show_matrix, show_rank};
 
 fn main(){
-    by_matrix();
+    by_ballots();
 }
 
 #[allow(dead_code)]
@@ -42,7 +42,7 @@ fn by_matrix(){
 
 #[allow(dead_code)]
 fn by_ballots() {
-    let base_path = "elections/25s/".to_owned();
+    let base_path = "elections/suspect_c/".to_owned();
     let candidatos = load_candidates((base_path.clone()+"candidatas.txt").as_str());
     let cedulas = load_cedulas((base_path+"urna.txt").as_str());
     let preferencias = pref_matriz(&cedulas, candidatos.len());

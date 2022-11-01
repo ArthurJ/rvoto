@@ -1,4 +1,4 @@
-Esse exemplo é interessante. Além de mostrar um empate usando Tideman, ainda tem um comportamento contra-intuitivo usando Schulze.
+Esse exemplo é interessante. Além de mostrar um empate usando Tideman, ainda tem um comportamento contraintuitivo usando Schulze.
 
 Rank por Tideman:
 André Rebouças [A] -> Santos Dumont [C] -> Cesar Lattes [B] ->  Machado de Assis [D]
@@ -17,48 +17,48 @@ Enquanto em Schulze [D] se torna a única da lista capaz de alcançar as demais:
   |  4┌-->[A]---┐6  |
   |   |         |   |
   |   |         V   |
-  └->[B] <-5-- [C]--┘
+  └->[B]<--5---[C]--┘
 
 Uma das formas de encontrar o vencedor é eliminar iterativamente todas as opções que não alcançam as demais, e depois as ligações mais fracas:
 
 (Todos se alcançam)
   ┌------ [D]<------┐
   |        Λ        |
-  |        | 1      |
+  |        | (1)    |
  3|        |        |2
   |  4┌-->[A]---┐6  |
   |   |         |   |
   |   |         V   |
-  └->[B] <-5-- [C]--┘
+  └->[B]<--5---[C]--┘
 
 (Eliminando ligação fraca)
   ┌------ [D]<------┐
- 3|                 |2
+ 3|                 |(2)
   |  4┌-->[A]---┐6  |
   |   |         |   |
   |   |         V   |
-  └->[B] <-5-- [C]--┘
+  └->[B]<--5---[C]--┘
 
 (Eliminando ligação fraca)
 
         4┌-->[A]---┐6
          |         |
          |         V
-[D]--3->[B] <-5-- [C]
+[D]--3->[B]<--5---[C]
 
 Nesse ponto, [D] ainda alcança todas, as demais não alcançam [D] e por tanto [D] vence.
 Continuando esse processo (e ignorando [D]) teremos:
 
-      (4)┌-->[A]---┐6
-         |         |
-         |         V
-[D]--3->[B] <-5-- [C]
+(4)┌-->[A]---┐6
+   |         |
+   |         V
+  [B]<--5---[C]
 
 (Eliminando ligação fraca)
      [A]---6
            |
            V
-[B] <-5-- [C]
+[B]<--5---[C]
 
 (Reescrevendo)
 [A]-6->[C]-5->[B]

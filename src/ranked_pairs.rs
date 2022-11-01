@@ -4,14 +4,14 @@ https://en.wikipedia.org/wiki/Ranked_pairs
 Primeiro é gerada uma matriz de contagem onde o valor de cada celula [i][j]
     é a soma das vitórias e derrotas do canditato i contra o canditado j.
 
-Depois é feita a ordenação dos resultados 1x1, a vitória mais expressiva é a primeira da lista.
-
 Usando isso, criamos uma matriz de resultados onde
     a posição [i][j] fica com o valor 1 e a sua simétrica fica com -1 quando i vence j
 
-Nessa matriz, encontramos a candidata vencedora (com maior preferência/source degree).
+Nessa matriz, encontramos a candidata vencedora (com mais vitórias).
 
-Empate: A opção mais no início da lista vence.
+Depois é feita a ordenação dos resultados 1x1, onde a candidata com mais vitórias fica em primeiro na lista.
+
+Empate: A opção mais no início da lista de candidatas vence.
 
     O processo de ordenação é estável, por isso se a pontuação de duas candidatas forem iguais,
     quando a lista é ordenada a posição relativa entre elas se preservaria.
