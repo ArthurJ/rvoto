@@ -72,8 +72,8 @@ pub fn print_pairwise_results(winner_path: &Vec<usize>, candidates:&Vec<String>)
     println!("\nPreferência Geral:");
 
     for (i,winner) in winner_path.iter().enumerate(){
-        for looser in winner_path.split_at(i+1).1{
-            println!("\t{} x {} => {}", candidates[*winner], candidates[*looser], candidates[*winner])
+        for loser in winner_path.split_at(i+1).1{
+            println!("\t{} x {} => {}", candidates[*winner], candidates[*loser], candidates[*winner])
         }}
     println!("\n");
 }
