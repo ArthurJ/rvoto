@@ -30,7 +30,7 @@ pub fn ranked_pairs(matriz_urna: &Vec<Vec<usize>>) -> (Vec<usize>,Vec<Vec<isize>
     let result_mtx = result_matrix(pairwise, matriz_urna.len());
 
     let mut vote_sums:Vec<isize> = Vec::new();
-    for line in result_mtx.clone() {
+    for line in &result_mtx {
         vote_sums.push(line.iter().sum());
     }
 
@@ -86,9 +86,8 @@ fn get_pair_result(tally:&Vec<Vec<isize>>, opt1:usize, opt2:usize) -> (isize, us
 fn create_tally(prefs:&Vec<Vec<usize>>) -> Vec<Vec<isize>> {
     let mut tally: Vec<Vec<isize>> = Vec::new();
     for (idx,line) in prefs.iter().enumerate(){
-        let tally_line:Vec<isize> =
-            (*line.iter().map(|x| *x as isize).collect::<Vec<isize>>()).to_vec();
-        tally.insert(idx,tally_line);
+        let tally_line: Vec<isize> = line.iter().map(|&x| x as isize).collect();
+        tally.insert(idx, tally_line);
     }
     let dim = prefs.len();
     for (i,j) in iproduct!(0..dim, 0..dim){
